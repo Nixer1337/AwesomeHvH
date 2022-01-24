@@ -1,0 +1,41 @@
+"Games"
+{
+    "csgo"
+    {
+        "Signatures"
+        {
+            "RecordDataIntoTrack"
+            {
+                "library" "server"
+                "linux"   "\x55\x89\xE5\x57\x56\x53\x83\xEC\x4C\x8B\x15\x2A\x2A\x2A\x2A\x8B\x5D\x0C"
+                "windows" "\x55\x8B\xEC\x83\xE4\xF8\x8B\x0D\x2A\x2A\x2A\x2A\x83\xEC\x14\x53"
+            }
+            "StartLagCompensation"
+            {
+                "library" "server"
+                "linux"   "\x55\x89\xE5\x57\x56\x53\x83\xEC\x7C\xC7\x45\xBC\x00\x00\x00\x00"
+            }
+            "ClampBonesInBBox"
+            {
+                "library" "server"
+                "linux"   "\x55\x89\xE5\x57\x56\x53\x81\xEC\x0C\x01\x00\x00\x8B\x5D\x08\x8B\x83\xD8\x04\x00\x00"
+            }
+            "EyeAngles"
+            {
+                "library" "server"
+                "linux"   "\x55\x89\xE5\x81\xEC\x88\x00\x00\x00\x8B\x45\x08\x89\x5D\xF4\x89\x75\xF8\x8B\x1D\x2A\x2A\x2A\x2A"
+            }
+        }
+        "Offsets"
+        {
+            "m_CompensatedEntities"
+            {
+                "linux"   "16"
+            }
+            "m_bLagCompensation"
+            {
+                "linux"   "3288"
+            }
+        }
+    }
+}
