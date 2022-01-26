@@ -24,12 +24,9 @@ int g_flSimulationTimeOffset = 0;
 int g_vecOriginOffset = 0;
 int g_hActiveWeaponOffset = 0;
 int g_fLastShotTimeOffset = 0;
+int g_VisualAngleOffset = 0;
 int g_CompensatedEntitiesOffset = 0;
 int g_bLagCompensationOffset = 0;
-
-bool g_ClampBonesCall = false;
-float g_BackupRoll = 0.f;
-float* g_pRestoreRoll = nullptr;
 
 struct LagListCustomData_t
 {
@@ -45,36 +42,21 @@ ConVar sv_disable_lagpeek("sv_disable_lagpeek", "1", FCVAR_RELEASE, "Disables la
 ConVar sv_disable_roll_aa("sv_disable_roll_aa", "1", FCVAR_RELEASE, "Disables extended roll desync that was added by some uneducated valve employee");
 ConVar sv_force_lag_compensation("sv_force_lag_compensation", "0", FCVAR_RELEASE, "Forces lagcompensation to avoid anti-exploiters with cl_lagcompensation set to 0");
 
-DETOUR_DECL_MEMBER1(EyeAngles, Vector*, void*, entity)
-{
-    auto pEyeAnglesRet = DETOUR_MEMBER_CALL(EyeAngles)(entity);
-
-    if (g_ClampBonesCall && sv_disable_roll_aa.GetBool())
-    {
-        g_pRestoreRoll = &pEyeAnglesRet->z;
-        g_BackupRoll = pEyeAnglesRet->z;
-        pEyeAnglesRet->z = 0.f;
-    }
-
-    return pEyeAnglesRet;
-}
-
-DETOUR_DECL_MEMBER3(ClampBonesInBBox, void, void*, entity, void*, matrix, int, mask)
+DETOUR_DECL_MEMBER2(ClampBonesInBBox, void, void*, matrix, int, mask)
 {
     if (sv_legacy_desync.GetBool())
         return;
 
-    g_ClampBonesCall = true;
+    auto& v_angle = *reinterpret_cast<Vector*>(uintptr_t(this) + g_VisualAngleOffset);
 
-    DETOUR_MEMBER_CALL(ClampBonesInBBox)(entity, matrix, mask);
+    const auto roll_backup = v_angle.z;
 
-    if (g_pRestoreRoll)
-    {
-        *g_pRestoreRoll = g_BackupRoll;
-        g_pRestoreRoll = nullptr;
-    }
+    if (sv_disable_roll_aa.GetBool())
+        v_angle.z = 0.f;
 
-    g_ClampBonesCall = false;
+    DETOUR_MEMBER_CALL(ClampBonesInBBox)(matrix, mask);
+
+    v_angle.z = roll_backup;
 }
 
 DETOUR_DECL_MEMBER3(RecordDataIntoTrack, void, void*, entity, LagRecordList*, track, bool, wantsAnims)
@@ -218,6 +200,9 @@ bool AwesomeHvH::SDK_OnLoad(char *error, size_t maxlength, bool late)
     gamehelpers->FindSendPropInfo("CWeaponCSBase", "m_fLastShotTime", &info);
 	g_fLastShotTimeOffset = info.actual_offset;
 
+    gamehelpers->FindSendPropInfo("CBasePlayer", "deadflag", &info);
+    g_VisualAngleOffset = info.actual_offset + 4;
+
     CDetourManager::Init(smutils->GetScriptingEngine(), g_GameConfig);
 
     g_RecordDataIntoTrack_Detour = DETOUR_CREATE_MEMBER(RecordDataIntoTrack, "RecordDataIntoTrack");
@@ -241,17 +226,9 @@ bool AwesomeHvH::SDK_OnLoad(char *error, size_t maxlength, bool late)
         return false;
     }
 
-    g_EyeAngles_Detour = DETOUR_CREATE_MEMBER(EyeAngles, "EyeAngles");
-    if (!g_EyeAngles_Detour)
-    {
-        smutils->Format(error, maxlength - 1, "Hooking EyeAngles failed");
-        return false;
-    }
-
     g_RecordDataIntoTrack_Detour->EnableDetour();
     g_StartLagCompensation_Detour->EnableDetour();
     g_ClampBonesInBBox_Detour->EnableDetour();
-    g_EyeAngles_Detour->EnableDetour();
 
     sharesys->RegisterLibrary(myself, "AwesomeHvH");
 
@@ -267,7 +244,6 @@ void AwesomeHvH::SDK_OnUnload()
     g_RecordDataIntoTrack_Detour->DisableDetour();
     g_StartLagCompensation_Detour->DisableDetour();
     g_ClampBonesInBBox_Detour->DisableDetour();
-    g_EyeAngles_Detour->DisableDetour();
 
     g_pCVar->UnregisterConCommand((ConCommandBase*)&sv_legacy_desync); 
     g_pCVar->UnregisterConCommand((ConCommandBase*)&sv_disable_lagpeek); 
