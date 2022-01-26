@@ -34,8 +34,11 @@ for sdk_name in Extension.sdks:
   ]
 
   binary.compiler.cxxincludes += [
-      os.path.join(sdk.path, 'game', 'server'),
-      os.path.join(sdk.path)
+    os.path.join(sdk.path, 'game', 'server'),
+    os.path.join(sdk.path)
   ]
+  
+  if binary.compiler.version >= 1900:
+    binary.compiler.linkflags += ['legacy_stdio_definitions.lib']
 
 Extension.extensions = builder.Add(project)
