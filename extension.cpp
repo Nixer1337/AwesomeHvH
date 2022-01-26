@@ -24,7 +24,7 @@ int g_flSimulationTimeOffset = 0;
 int g_vecOriginOffset = 0;
 int g_hActiveWeaponOffset = 0;
 int g_fLastShotTimeOffset = 0;
-int g_VisualAngleOffset = 0;
+int g_ViewAngleOffset = 0;
 int g_CompensatedEntitiesOffset = 0;
 int g_bLagCompensationOffset = 0;
 
@@ -47,7 +47,7 @@ DETOUR_DECL_MEMBER2(ClampBonesInBBox, void, void*, matrix, int, mask)
     if (sv_legacy_desync.GetBool())
         return;
 
-    auto& v_angle = *reinterpret_cast<Vector*>(uintptr_t(this) + g_VisualAngleOffset);
+    auto& v_angle = *reinterpret_cast<Vector*>(uintptr_t(this) + g_ViewAngleOffset);
 
     const auto roll_backup = v_angle.z;
 
@@ -201,7 +201,7 @@ bool AwesomeHvH::SDK_OnLoad(char *error, size_t maxlength, bool late)
 	g_fLastShotTimeOffset = info.actual_offset;
 
     gamehelpers->FindSendPropInfo("CBasePlayer", "deadflag", &info);
-    g_VisualAngleOffset = info.actual_offset + 4;
+    g_ViewAngleOffset = info.actual_offset + 4;
 
     CDetourManager::Init(smutils->GetScriptingEngine(), g_GameConfig);
 
