@@ -16,7 +16,6 @@ ConVar* sv_maxunlag = nullptr;
 CDetour* g_RecordDataIntoTrack_Detour = nullptr;
 CDetour* g_StartLagCompensation_Detour = nullptr;
 CDetour* g_ClampBonesInBBox_Detour = nullptr;
-CDetour* g_EyeAngles_Detour = nullptr;
 
 IGameConfig* g_GameConfig = nullptr;
 
