@@ -27,11 +27,11 @@ struct LagRecord
     float          m_flSimulationTime;
 
     // Player animation details, so we can get the legs in the right spot.
-    LayerRecord        m_layerRecords[15];
+    LayerRecord        m_layerRecords[ 15 ];
     int            m_masterSequence;
     float          m_masterCycle;
 
-    float          m_flPoseParameters[24];
+    float          m_flPoseParameters[ 24 ];
 };
 
 typedef CUtlFixedLinkedList< LagRecord > LagRecordList;

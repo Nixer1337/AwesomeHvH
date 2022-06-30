@@ -11,22 +11,22 @@
 #define SMEXT_CONF_LICENSE		"GPL"
 #define SMEXT_CONF_DATESTRING	__DATE__
 
-/** 
+/**
  * @brief Exposes plugin's main interface.
  */
 #define SMEXT_LINK(name) SDKExtension *g_pExtensionIface = name;
 
-/**
- * @brief Sets whether or not this plugin required Metamod.
- * NOTE: Uncomment to enable, comment to disable.
- */
+ /**
+  * @brief Sets whether or not this plugin required Metamod.
+  * NOTE: Uncomment to enable, comment to disable.
+  */
 #define SMEXT_CONF_METAMOD
 
-/** Enable interfaces you want to use here by uncommenting lines */
-//#define SMEXT_ENABLE_FORWARDSYS
-//#define SMEXT_ENABLE_HANDLESYS
-//#define SMEXT_ENABLE_PLAYERHELPERS
-//#define SMEXT_ENABLE_DBMANAGER
+  /** Enable interfaces you want to use here by uncommenting lines */
+  //#define SMEXT_ENABLE_FORWARDSYS
+  //#define SMEXT_ENABLE_HANDLESYS
+  //#define SMEXT_ENABLE_PLAYERHELPERS
+  //#define SMEXT_ENABLE_DBMANAGER
 #define SMEXT_ENABLE_GAMECONF
 #define SMEXT_ENABLE_MEMUTILS
 #define SMEXT_ENABLE_GAMEHELPERS
