@@ -80,14 +80,7 @@ DETOUR_DECL_MEMBER3( RecordDataIntoTrack, void, void*, entity, LagRecordList*, t
             tailIndex = track->Tail( );
         }
 
-        auto lagListIter = g_LagListCustomData.find( track );
-        if ( lagListIter == g_LagListCustomData.end( ) )
-        {
-            auto insert_result = g_LagListCustomData.insert( std::pair<void*, LagListCustomData_t>( track, LagListCustomData_t( ) ) );
-            lagListIter = insert_result.first;
-        }
-
-        auto pLagListData = &lagListIter->second;
+        auto& data = g_LagListCustomData[ track ];
 
         auto& flSimulationTime = *reinterpret_cast< float* >( uintptr_t( entity ) + g_flSimulationTimeOffset );
         auto& vecOrigin = *reinterpret_cast< Vector* >( uintptr_t( entity ) + g_vecOriginOffset );
@@ -109,16 +102,16 @@ DETOUR_DECL_MEMBER3( RecordDataIntoTrack, void, void*, entity, LagRecordList*, t
 
             // detect lagpeek, skip hideshots
             if ( flSimulationTime <= head.m_flSimulationTime
-                && vecOrigin != pLagListData->m_vecOriginLast
-                && flShotTime == pLagListData->m_flShotTimeLast )
+                && vecOrigin != data.m_vecOriginLast
+                && flShotTime == data.m_flShotTimeLast )
             {
                 flSimulationTime = head.m_flSimulationTime + g_pGlobals->interval_per_tick;
                 // g_pSM->LogMessage(myself, "simtime corrected");
             }
         }
 
-        pLagListData->m_vecOriginLast = vecOrigin;
-        pLagListData->m_flShotTimeLast = flShotTime;
+        data.m_vecOriginLast = vecOrigin;
+        data.m_flShotTimeLast = flShotTime;
     }
 
     DETOUR_MEMBER_CALL( RecordDataIntoTrack )( entity, track, wantsAnims );
@@ -149,7 +142,6 @@ DETOUR_DECL_MEMBER5( StartLagCompensation, void, void*, player, int, lagCompensa
             continue;
 
         EntityLagData* ld = m_CompensatedEntities[ slot ];
-
         g_LagListCustomData.erase( reinterpret_cast< void* >( &ld->m_LagRecords ) );
     }
 
