@@ -39,7 +39,7 @@ std::map<void*, LagListCustomData_t> g_LagListCustomData;
 ConVar sv_legacy_desync( "sv_legacy_desync", "0", FCVAR_RELEASE | FCVAR_REPLICATED, "Disables recently added valve shitcode that breaks lag compensation" );
 ConVar sv_disable_lagpeek( "sv_disable_lagpeek", "1", FCVAR_RELEASE, "Disables lagpeek aka \"defensive doubletap\"" );
 ConVar sv_disable_roll_aa( "sv_disable_roll_aa", "1", FCVAR_RELEASE, "Disables extended roll desync that was added by some uneducated valve employee" );
-ConVar sv_force_lag_compensation( "sv_force_lag_compensation", "0", FCVAR_RELEASE, "Forces lagcompensation to avoid anti-exploiters with cl_lagcompensation set to 0" );
+ConVar sv_force_lag_compensation( "sv_force_lag_compensation", "0", FCVAR_RELEASE | FCVAR_REPLICATED, "Forces lagcompensation to avoid anti-exploiters with cl_lagcompensation set to 0" );
 
 DETOUR_DECL_MEMBER2( ClampBonesInBBox, void, void*, matrix, int, mask )
 {

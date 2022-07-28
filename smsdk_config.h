@@ -4,7 +4,7 @@
 /* Basic information exposed publicly */
 #define SMEXT_CONF_NAME			"AwesomeHvH extension"
 #define SMEXT_CONF_DESCRIPTION	"HvH related fixes"
-#define SMEXT_CONF_VERSION		"1.0.1"
+#define SMEXT_CONF_VERSION		"1.0.2"
 #define SMEXT_CONF_AUTHOR		"Nixer1337"
 #define SMEXT_CONF_URL			"https://www.unknowncheats.me/forum/counterstrike-global-offensive/487084-awesomehvh-server-plugin-legacy-desync.html"
 #define SMEXT_CONF_LOGTAG		"AwesomeHvH"
